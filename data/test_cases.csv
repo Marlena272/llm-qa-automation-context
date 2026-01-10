@@ -1,0 +1,7 @@
+test_id,test_type,context_1,context_2,expected
+TC-01,context_conflict,I have three cats.,I only have two animals.,FAIL
+TC-02,context_conflict,I have a 1 dog and two cats.,I only have two animals.,FAIL
+TC-03,context_conflict,I have one cat.,I only have one animal.,PASS
+TC-04,context_conflict,I have zero animals.,I only have one animal.,FAIL
+TC-05,context_conflict,I have -2 animals.,I only have two animals.,FAIL
+TC-06,context_conflict,I have 1000 animals.,I only have two animals.,FAIL
