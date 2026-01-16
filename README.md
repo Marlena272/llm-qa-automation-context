@@ -1,153 +1,98 @@
-# LLM QA Automation – Context Conflict Detection
+# LLM Evaluation & QA Automation
 
-A mini Python framework for evaluating language model behavior with a focus on detecting **context conflicts** in multi-turn inputs.
-
-This project demonstrates a practical approach to **LLM evaluation, AI/LLM Quality Assurance, and automated regression testing**.
-
-## What this project does
-
-- Detects contradictory numerical information across user statements (context conflicts)
-- Runs automated test cases defined in CSV files
-- Generates regression test results in CSV format
-- Uses a modular design that separates logic, input/output, and execution
-
-## Example test scenario
-
-The system detects inconsistencies such as:
-- "I have three cats."
-- "I only have two animals."
-
-Expected result: `FAIL` (context conflict)
-
-## How it works (step by step)
-
-1. Test cases are defined in a CSV file (`test_cases.csv`), including:
-   - test ID
-   - test type
-   - two context statements
-   - expected result (PASS / FAIL)
-
-2. The program loads all test cases from the CSV file.
-
-3. For each test case, the system:
-   - extracts numerical information from both context statements,
-   - normalises numbers (e.g., "two" → 2, "10" → 10),
-   - compares all detected values.
-
-4. If more than one unique numerical value is found, the test is marked as:
-   - `FAIL` → context conflict detected  
-   Otherwise:
-   - `PASS` → context is consistent.
-
-5. The actual result is compared with the expected result from the test case.
-
-6. A regression report is generated and saved to a CSV file, allowing repeated evaluation of the same scenarios over time.
-
-## How to run
-
-From the project root directory:
-python -m src.main
-
-After execution, results are saved to a CSV file for further inspection and analysis.
-
-## Core functions explained
-
-### detect_context_conflict(context)
-
-This function is responsible for detecting contradictory numerical information in a list of user statements.
-
-**What it does:**
-- Iterates over each sentence in the provided context.
-- Splits sentences into words.
-- Attempts to extract numbers in two ways:
-  - Direct integers (e.g., "3", "10")
-  - Written numbers using the `word2number` library (e.g., "two", "five")
-- Stores all detected numbers in a list.
-- Compares unique values:
-  - If more than one unique number exists → returns `FAIL`
-  - Otherwise → returns `PASS`
-
-This simulates a simplified form of model behavior validation, where internal consistency of user-provided information is tested.
+This repository contains my practical work in **LLM testing, evaluation, and AI quality assurance**.
+The main focus is on building realistic evaluation pipelines that combine deterministic rules with
+LLM-based judgment for auditing and explainability.
 
 ---
 
-### load_test_cases(path)
+## 🔄 Project Update – LLM Evaluation Pipeline
 
-This function loads structured test cases from a CSV file.
+### ✅ What has been implemented
 
-**What it does:**
-- Opens the CSV file using `DictReader`.
-- Converts each row into a dictionary with:
-  - test ID
-  - test type
-  - context statements
-  - expected outcome
-- Returns a list of test case objects.
+I designed and implemented an **end-to-end LLM evaluation and QA automation pipeline**.
+The system evaluates a rule-based decision mechanism and audits its failures using a
+Large Language Model acting as an **independent judge**.
 
-This allows scalable test design without modifying the code when adding new test cases.
+The project evolved from a simple rule-based script into a **modular, production-style evaluation system**.
 
 ---
 
-### test_run(test_cases)
+## 🧱 Architecture & Structure
 
-This function executes the regression suite.
+The project follows a clear separation of concerns:
 
-**What it does:**
-- Iterates over all test cases.
-- Applies `detect_context_conflict()` to each context.
-- Compares the returned result with the expected value.
-- Assigns a status:
-  - "Test Case Passed"
-  - "Test Case Failed. Correct answer: `<expected>`"
-- Collects all results into a structured list for reporting.
+- **`main.py`**  
+  It is responsible for running the entire evaluation pipeline.
 
-This simulates automated evaluation of system behavior.
+- **`io_utils.py`**  
+  Utilities for loading test cases from CSV files and saving raw evaluation results.
 
----
+- **`evaluator.py`**  
+  A deterministic, rule-based system designed to detect logical conflicts
+  (e.g. numerical inconsistencies across context).
 
-### save_results(path, test_results)
+- **`judge.py`**  
+  A standalone **LLM-as-a-Judge module** used to audit and explain failures of the rule-based system.  
+  The LLM does **not** make decisions — it only evaluates and explains incorrect outcomes.
 
-This function generates the regression report.
+- **`analyze_results.py`**  
+  Analysis layer built with pandas:
+  - merges test cases and evaluation results,
+  - calculates error rate,
+  - identifies risky test types,
+  - analyses false positives and false negatives,
+  - selectively invokes the LLM judge **only for failed cases**.
 
-**What it does:**
-- Writes a CSV file containing:
-  - test ID
-  - test type
-  - actual result
-  - expected result
-  - pass/fail status
-- Enables later analysis, comparison between runs, and tracking of regressions.
-
----
-
-## Why this matters
-
-This project reflects real-world challenges in testing AI systems, including:
-- Model behavior evaluation
-- Structured test design
-- Automated regression testing
-- Result reporting for analysis
-- Maintainable and extensible architecture
-
-It demonstrates hands-on skills relevant to:
-- AI / LLM QA
-- Model Evaluation
-- Trust & Safety
-- QA Automation for AI systems
+- **`to_pdf.py`**  
+  Automatically generates a **human-readable PDF report** containing evaluation metrics
+  and LLM explanations.
 
 ---
 
-## Future improvements
+## 🧪 Evaluation Logic
 
-- Additional test categories (hallucinations, safety, refusal handling)
-- SQL-based analysis of test results
-- Integration with real LLM APIs for live evaluation
+- Test cases are loaded from structured CSV files.
+- A deterministic rule-based evaluator produces initial PASS / FAIL decisions.
+- Errors are analysed quantitatively:
+  - overall error rate,
+  - false positives,
+  - false negatives,
+  - distribution of errors by test type.
+- Only a limited subset of failed cases is reviewed by an LLM acting as an **independent auditor**.
+- LLM responses are constrained to a strict output format
+  (`AGREE / DISAGREE + short explanation`) to ensure reliability.
 
 ---
 
-## Author
+## 📊 Outputs
 
-Created as a portfolio project focused on practical LLM evaluation and AI quality assurance.
+The pipeline generates multiple artefacts:
 
+- `test_results.csv` – raw evaluation results  
+- `analyzed_results.csv` – enriched results with metrics and LLM feedback  
+- `llm_results_report.pdf` – final evaluation report for human stakeholders  
 
+This demonstrates how LLM evaluation can be integrated into **realistic QA workflows**, not just notebooks.
 
+---
+
+## 🎯 Key Design Decisions
+
+- Clear separation between **rule-based logic** and **LLM-based judgment**
+- LLM used for **auditing and explainability**, not decision control
+- Cost-aware design (LLM invoked only on failures)
+- Outputs designed for both **technical and non-technical stakeholders**
+- Modular structure inspired by real-world QA and evaluation pipelines
+
+---
+
+## 🚀 Skills Demonstrated
+
+- LLM evaluation and testing
+- LLM as a Judge pattern
+- AI quality assurance
+- Error analysis with pandas
+- Modular Python application design
+- Automated PDF report generation
+- Production-oriented thinking beyond notebooks
