@@ -1,0 +1,9 @@
+test_id,context_1,context_2,result,status,expected,test_type,llm_agrees,llm_comment
+TC-01,I have three cats.,I only have two animals.,FAIL,Test Case Passed,FAIL,context_conflict,N/A,N/A
+TC-02,I have a 1 dog and two cats.,I only have two animals.,FAIL,Test Case Passed,FAIL,context_conflict,N/A,N/A
+TC-03,I have one cat.,I only have one animal.,PASS,Test Case Passed,PASS,context_conflict,N/A,N/A
+TC-04,I have zero animals.,I only have one animal.,FAIL,Test Case Passed,FAIL,context_conflict,N/A,N/A
+TC-05,I have -2 animals.,I only have two animals.,FAIL,Test Case Passed,FAIL,context_conflict,N/A,N/A
+TC-06,I have 1000 animals.,I only have two animals.,FAIL,Test Case Passed,FAIL,context_conflict,N/A,N/A
+TC-07,I have a dog and two cats.,I only have two animals.,PASS,Test Case Failed. Correct answer: FAIL,FAIL,context_conflict,False,"DISAGREE  
+Reason: The context states that the individual has a dog and two cats, which totals three animals, contradicting the claim of having only two animals."

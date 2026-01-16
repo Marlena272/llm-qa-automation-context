@@ -5,3 +5,4 @@ TC-03,context_conflict,PASS,PASS,Test Case Passed
 TC-04,context_conflict,FAIL,FAIL,Test Case Passed
 TC-05,context_conflict,FAIL,FAIL,Test Case Passed
 TC-06,context_conflict,FAIL,FAIL,Test Case Passed
+TC-07,context_conflict,PASS,FAIL,Test Case Failed. Correct answer: FAIL
