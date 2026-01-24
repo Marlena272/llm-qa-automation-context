@@ -1,6 +1,6 @@
 import pandas as pd
-from judge import llm_judge
-from to_pdf import export_to_pdf
+from .judge import llm_judge
+from .to_pdf import export_to_pdf
 
 def analyze(path_cases, path_results):
     cases_df = pd.read_csv(path_cases)

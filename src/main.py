@@ -1,6 +1,7 @@
-from io_utils import load_test_cases, save_results
-from evaluator import test_run
-from analyze_results import analyze
+from src.io_utils import load_test_cases, save_results
+from src.evaluator import test_run
+from src.analyze_results import analyze
+
   
 print("=== MINI REGRESSION SUITE ===")
 
